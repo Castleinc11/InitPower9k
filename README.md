@@ -3,7 +3,6 @@
 A guide for setting up InitPower9k.
 
 ## Iterm
----
 
 - Install Homebrew
 > /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -14,7 +13,6 @@ A guide for setting up InitPower9k.
 - Change Iterm color Scheme
 
 ## Fish
----
 
 Install Fish
 > brew install fish
@@ -61,7 +59,6 @@ gaa | `git add --all`
 
 
 ## Zsh
----
 
 Install zsh
 > brew install zsh
@@ -77,6 +74,7 @@ plugins=(git sublime vscode history history-substring-search zsh-syntax-highligh
 ```
 
 ## Shell
+
 List installed shells
 > cat /etc/shells
 
@@ -84,9 +82,9 @@ Set default shell
 > chsh -s <path_to_shell>
 
 ## Miscellaneous
----
 
 ### Mac
+
 - Bind `⌘+1` to Iterm
 - Bind `⌘+2` to Amphetamine
 - Bind `⌘+3` to Sleep
@@ -100,6 +98,7 @@ Set default shell
 ![Bind sleep hotkey](resources/bind_sleep.png?raw=true "Bind sleep")
 
 #### Terminal Notification
+
 > osascript -e 'display notification "Process execution complete" with title "Process terminated" sound name "Morse"'
 
 ```sh
@@ -108,8 +107,71 @@ funcsave nf
 ```
 
 #### Touch Bar
+
 Install My TouchBar. My Rules.
 > brew install --cask mtmr
 
-<!-- Modify [resources/items.json](~/Library/Application\ Support/MTMR/items.json) -->
 Modify [~/Library/Application\ Support/MTMR/items.json](resources/items.json)
+
+
+#### AppleScript
+
+Setup script to initialize workflow
+> (Optional) Install Tmuxinator
+
+```applescript
+    on run argv
+    tell application "iTerm2"
+        tell current window
+            create tab with profile "Default"
+        end tell
+
+        tell first session of current tab of current window
+            write text "cd ~/Documents/Workspace/Project"
+            if (count of argv) = 0 then
+                write text "replay source venv/bin/activate"
+            else
+                write text "source venv/bin/activate"
+            end if
+            write text "make services"
+        end tell
+
+        tell current window
+            create tab with profile "Default"
+        end tell
+
+        tell first session of current tab of current window
+            write text "cd ~/Documents/Workspace/Project"
+            if (count of argv) = 0 then
+                write text "replay source venv/bin/activate"
+            else
+                write text "source venv/bin/activate"
+            end if
+            write text "make start"
+        end tell
+
+        tell current window
+            create tab with profile "Default"
+        end tell
+
+        tell first session of current tab of current window
+            write text "cd ~/Documents/Workspace/Project"
+            if (count of argv) = 0 then
+                write text "replay source venv/bin/activate"
+            else
+                write text "source venv/bin/activate"
+            end if
+            write text "make worker"
+        end tell
+
+        tell tab 1 of current window
+            select
+        end tell
+
+        tell first session of current tab of current window
+            write text "cd ~/Documents/Workspace/Project"
+            write text "git status"
+        end tell
+    end tell
+end run
+```
